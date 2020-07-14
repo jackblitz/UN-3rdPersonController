@@ -18,16 +18,17 @@ public class PlayerController : MonoBehaviour
         mPlayerInput.LookAt.performed += ctx => mPlayerModel.LookAtDirection = ctx.ReadValue<Vector2>();
         mPlayerInput.Move.performed += ctx => mPlayerModel.MovementDirection = ctx.ReadValue<Vector2>();
 
-        /*mPlayerInput.Crouch.performed += ctx => mPlayerModel.IsCrouched = !mPlayerModel.IsCrouched;
+        mPlayerInput.Crouch.performed += ctx => mPlayerModel.IsCrouched = !mPlayerModel.IsCrouched;
 
-        mPlayerInput.Run.performed += ctx => mPlayerModel.IsRunning = false;
+        mPlayerInput.Run.performed += ctx => mPlayerModel.IsRunning = true;
         mPlayerInput.Run.canceled += ctx => mPlayerModel.IsRunning = false;
 
-        mPlayerInput.ContextAction.performed += ctx => ContextAction();*/
+        mPlayerInput.ContextAction.performed += ctx => ContextAction();
     }
 
     private void ContextAction()
     {
+        mPlayerModel.IsGrounded = false;
         var coroutine = Jump();
         StartCoroutine(coroutine);
     }
@@ -35,6 +36,7 @@ public class PlayerController : MonoBehaviour
     private IEnumerator Jump()
     {
         yield return new WaitForSeconds(2f);
+        mPlayerModel.IsGrounded = true;
     }
 
 }

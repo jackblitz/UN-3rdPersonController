@@ -46,6 +46,18 @@ public class PlayerModel : MonoBehaviour, ConsoleLogs
 
         stringBuilder.Append("Look At Direction: ");
         stringBuilder.Append(LookAtDirection.ToString());
+        stringBuilder.Append("\n");
+        stringBuilder.Append("Movement Direction: ");
+        stringBuilder.Append(MovementDirection.ToString());
+        stringBuilder.AppendLine();
+        stringBuilder.Append("Is Running: ");
+        stringBuilder.Append(IsRunning);
+        stringBuilder.AppendLine();
+        stringBuilder.Append("Is Crouched: ");
+        stringBuilder.Append(IsCrouched);
+        stringBuilder.AppendLine();
+        stringBuilder.Append("Is Grounded: ");
+        stringBuilder.Append(IsGrounded);
 
         return stringBuilder.ToString();
     }
