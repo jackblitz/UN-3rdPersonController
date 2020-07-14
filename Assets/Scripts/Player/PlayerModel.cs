@@ -40,10 +40,15 @@ public class PlayerModel : MonoBehaviour, ConsoleLogs
         set;
     }
 
+    public bool IsAttacking { get; set; }
+
+    public bool IsLocked { get; set; }
+
     public string GetConsoleLog()
     {
         StringBuilder stringBuilder = new StringBuilder();
-
+        stringBuilder.Append(this.name);
+        stringBuilder.Append("\n");
         stringBuilder.Append("Look At Direction: ");
         stringBuilder.Append(LookAtDirection.ToString());
         stringBuilder.Append("\n");
@@ -58,6 +63,12 @@ public class PlayerModel : MonoBehaviour, ConsoleLogs
         stringBuilder.AppendLine();
         stringBuilder.Append("Is Grounded: ");
         stringBuilder.Append(IsGrounded);
+        stringBuilder.AppendLine();
+        stringBuilder.Append("Is Attacking: ");
+        stringBuilder.Append(IsAttacking);
+        stringBuilder.AppendLine();
+        stringBuilder.Append("Is Locked: ");
+        stringBuilder.Append(IsLocked);
 
         return stringBuilder.ToString();
     }

@@ -60,6 +60,22 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Context Attack",
+                    "type": "Button",
+                    "id": "eefe59f4-0152-4f87-82f8-e33f97e902d0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Context Lock",
+                    "type": "Button",
+                    "id": "3fc03b77-c703-4610-b269-2e35e407b992",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -269,6 +285,28 @@
                     "processors": "",
                     "groups": "Keyboard",
                     "action": "Context Attach",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cd71a05c-e99a-4c72-9625-ff308a29b0f0",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Context Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d00ef00d-a70b-4d50-8b2a-5da09cb16fed",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Context Lock",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

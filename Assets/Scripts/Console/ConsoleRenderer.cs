@@ -17,6 +17,9 @@ public class ConsoleRenderer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        mTextRenderer.text = mActiveLog.GetConsoleLog();
+        if (mActiveLog != null)
+        {
+            mTextRenderer.text = mActiveLog.GetConsoleLog();
+        }
     }
 }

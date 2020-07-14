@@ -73,6 +73,22 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Context Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""eefe59f4-0152-4f87-82f8-e33f97e902d0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Context Lock"",
+                    ""type"": ""Button"",
+                    ""id"": ""3fc03b77-c703-4610-b269-2e35e407b992"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -284,6 +300,28 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""action"": ""Context Attach"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cd71a05c-e99a-4c72-9625-ff308a29b0f0"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Context Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d00ef00d-a70b-4d50-8b2a-5da09cb16fed"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Context Lock"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -348,6 +386,8 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         m_PlayerControls_Interact = m_PlayerControls.FindAction("Interact", throwIfNotFound: true);
         m_PlayerControls_ContextAction = m_PlayerControls.FindAction("Context Action", throwIfNotFound: true);
         m_PlayerControls_ContextAttach = m_PlayerControls.FindAction("Context Attach", throwIfNotFound: true);
+        m_PlayerControls_ContextAttack = m_PlayerControls.FindAction("Context Attack", throwIfNotFound: true);
+        m_PlayerControls_ContextLock = m_PlayerControls.FindAction("Context Lock", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_ContextStart = m_Menu.FindAction("Context Start", throwIfNotFound: true);
@@ -407,6 +447,8 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
     private readonly InputAction m_PlayerControls_Interact;
     private readonly InputAction m_PlayerControls_ContextAction;
     private readonly InputAction m_PlayerControls_ContextAttach;
+    private readonly InputAction m_PlayerControls_ContextAttack;
+    private readonly InputAction m_PlayerControls_ContextLock;
     public struct PlayerControlsActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -418,6 +460,8 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         public InputAction @Interact => m_Wrapper.m_PlayerControls_Interact;
         public InputAction @ContextAction => m_Wrapper.m_PlayerControls_ContextAction;
         public InputAction @ContextAttach => m_Wrapper.m_PlayerControls_ContextAttach;
+        public InputAction @ContextAttack => m_Wrapper.m_PlayerControls_ContextAttack;
+        public InputAction @ContextLock => m_Wrapper.m_PlayerControls_ContextLock;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -448,6 +492,12 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @ContextAttach.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnContextAttach;
                 @ContextAttach.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnContextAttach;
                 @ContextAttach.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnContextAttach;
+                @ContextAttack.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnContextAttack;
+                @ContextAttack.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnContextAttack;
+                @ContextAttack.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnContextAttack;
+                @ContextLock.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnContextLock;
+                @ContextLock.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnContextLock;
+                @ContextLock.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnContextLock;
             }
             m_Wrapper.m_PlayerControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -473,6 +523,12 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @ContextAttach.started += instance.OnContextAttach;
                 @ContextAttach.performed += instance.OnContextAttach;
                 @ContextAttach.canceled += instance.OnContextAttach;
+                @ContextAttack.started += instance.OnContextAttack;
+                @ContextAttack.performed += instance.OnContextAttack;
+                @ContextAttack.canceled += instance.OnContextAttack;
+                @ContextLock.started += instance.OnContextLock;
+                @ContextLock.performed += instance.OnContextLock;
+                @ContextLock.canceled += instance.OnContextLock;
             }
         }
     }
@@ -537,6 +593,8 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         void OnInteract(InputAction.CallbackContext context);
         void OnContextAction(InputAction.CallbackContext context);
         void OnContextAttach(InputAction.CallbackContext context);
+        void OnContextAttack(InputAction.CallbackContext context);
+        void OnContextLock(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {
