@@ -79,10 +79,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleInputData()
     {
-        float horLerp = mPlayerModel.MovementDirection.x;//Mathf.Lerp(lastDirection.x, mPlayerModel.MovementDirection.x, KeyFrameDelta * Time.deltaTime);
-        float verLerp = mPlayerModel.MovementDirection.y;// Mathf.Lerp(lastDirection.y, mPlayerModel.MovementDirection.y, KeyFrameDelta * Time.deltaTime);
-
-        Vector3 directionShift = lastDirection - new Vector3(horLerp, 0, verLerp);
+        //Vector3 directionShift = lastDirection - new Vector3(horLerp, 0, verLerp);
         /* mMomentumShift = directionShift.sqrMagnitude;
 
          if (mMomentumShift != 0)
@@ -90,9 +87,7 @@ public class PlayerController : MonoBehaviour
              Debug.Log(mMomentumShift);
          }*/
 
-        lastDirection = new Vector3(horLerp, 0, verLerp);
-
-        speed = lastDirection.magnitude;
+        speed = mPlayerModel.MovementDirection.magnitude;
 
         speed += mPlayerModel.IsRunning ? 1 : 0;
 
