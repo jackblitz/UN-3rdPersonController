@@ -40,6 +40,12 @@ public class PlayerModel : MonoBehaviour, ConsoleLogs
         set;
     }
 
+    public float Speed
+    {
+        get;
+        set;
+    }
+
     public bool IsAttacking { get; set; }
 
     public bool IsLocked { get; set; }

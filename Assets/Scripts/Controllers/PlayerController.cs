@@ -13,14 +13,14 @@ public class PlayerController : MonoBehaviour
     private CapsuleCollider mCollider;
 
     public float GroundDistance = 0.2f;
-
     public float JumpHeight = 2f;
-    private Vector3 lastDirection;
-    private float speed;
-    private Animator mAnimation;
-
     public float KeyFrameDelta = 3f;
-    private float lastSpeed;
+
+    private Animator mAnimation;
+    private float mLastSpeed;
+
+    //Transform to ditate walk direction
+    public Transform DirectionTransform;
 
     private void Awake()
     {
@@ -60,8 +60,11 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        CalculateSpeed();
+
+        HandleWalkDirection();
+
         HandleInputData();
-        //mPlayerModel.IsGrounded = Physics.Raycast(transform.position, -Vector3.up, out hit);
 
 
         //Debug.DrawRay(transform.position, -Vector3.up, Color.red);
@@ -87,20 +90,38 @@ public class PlayerController : MonoBehaviour
              Debug.Log(mMomentumShift);
          }*/
 
-        speed = mPlayerModel.MovementDirection.magnitude;
+        mAnimation.SetFloat("Speed", mPlayerModel.Speed);
 
-        speed += mPlayerModel.IsRunning ? 1 : 0;
+    }
 
-        float newSpeed = Mathf.Lerp(lastSpeed, speed, KeyFrameDelta * Time.deltaTime);
+    private void HandleWalkDirection()
+    {
+        Vector3 newDirection = new Vector3(mPlayerModel.MovementDirection.x, 0, mPlayerModel.MovementDirection.y) * 2;
+        DirectionTransform.transform.localPosition = Vector3.Lerp(DirectionTransform.transform.localPosition, newDirection, Time.deltaTime / mPlayerModel.Speed);
 
-        mAnimation.SetFloat("Speed", newSpeed);
+        //transform.LookAt(DirectionTransform);
+    }
 
-        lastSpeed = newSpeed;
+    public Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles)
+    {
+        return Quaternion.Euler(angles) * (point - pivot) + pivot;
     }
 
     private void OnAttachPerfomed()
     {
 
+    }
+
+    private void CalculateSpeed()
+    {
+        float speed = mPlayerModel.MovementDirection.magnitude;
+
+        speed += mPlayerModel.IsRunning ? 1 : 0;
+
+        float newSpeed = Mathf.Lerp(mLastSpeed, speed, KeyFrameDelta * Time.deltaTime);
+
+        mPlayerModel.Speed = newSpeed;
+        mLastSpeed = newSpeed;
     }
 
     private void OnInteractionPerformed()
