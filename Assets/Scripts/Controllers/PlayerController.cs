@@ -97,8 +97,11 @@ public class PlayerController : MonoBehaviour
     private void HandleWalkDirection()
     {
         Vector3 newDirection = new Vector3(mPlayerModel.MovementDirection.x, 0, mPlayerModel.MovementDirection.y) * 2;
-        DirectionTransform.transform.localPosition = Vector3.Lerp(DirectionTransform.transform.localPosition, newDirection, Time.deltaTime / mPlayerModel.Speed);
 
+        DirectionTransform.transform.localPosition = newDirection;//Vector3.Lerp(DirectionTransform.transform.localPosition, newDirection, Time.deltaTime / mPlayerModel.Speed);
+
+        Quaternion lookOnLook = Quaternion.LookRotation(DirectionTransform.position - transform.position);
+        //transform.rotation = Quaternion.Slerp(transform.rotation, lookOnLook, ((KeyFrameDelta / 2) * Time.deltaTime) * mPlayerModel.Speed);
         //transform.LookAt(DirectionTransform);
     }
 
