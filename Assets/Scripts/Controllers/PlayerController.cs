@@ -15,6 +15,12 @@ public class PlayerController : MonoBehaviour
     public float GroundDistance = 0.2f;
 
     public float JumpHeight = 2f;
+    private Vector3 lastDirection;
+    private float speed;
+    private Animator mAnimation;
+
+    public float KeyFrameDelta = 3f;
+    private float lastSpeed;
 
     private void Awake()
     {
@@ -45,6 +51,8 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         mBody = GetComponent<Rigidbody>();
+        mAnimation = GetComponentInChildren<Animator>();
+
         mCollider = GetComponent<CapsuleCollider>();
         GroundDistance = mCollider.bounds.extents.y;
 
@@ -52,6 +60,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        HandleInputData();
         //mPlayerModel.IsGrounded = Physics.Raycast(transform.position, -Vector3.up, out hit);
 
 
@@ -66,6 +75,32 @@ public class PlayerController : MonoBehaviour
         Vector3 offset = new Vector3(0, -0.2f, 0f);
         if (mPlayerModel.IsGrounded = Physics.Raycast(transform.position - offset, -Vector3.up, out hit, .5f))
             print("Found an object - distance: " + hit.distance);
+    }
+
+    private void HandleInputData()
+    {
+        float horLerp = mPlayerModel.MovementDirection.x;//Mathf.Lerp(lastDirection.x, mPlayerModel.MovementDirection.x, KeyFrameDelta * Time.deltaTime);
+        float verLerp = mPlayerModel.MovementDirection.y;// Mathf.Lerp(lastDirection.y, mPlayerModel.MovementDirection.y, KeyFrameDelta * Time.deltaTime);
+
+        Vector3 directionShift = lastDirection - new Vector3(horLerp, 0, verLerp);
+        /* mMomentumShift = directionShift.sqrMagnitude;
+
+         if (mMomentumShift != 0)
+         {
+             Debug.Log(mMomentumShift);
+         }*/
+
+        lastDirection = new Vector3(horLerp, 0, verLerp);
+
+        speed = lastDirection.magnitude;
+
+        speed += mPlayerModel.IsRunning ? 1 : 0;
+
+        float newSpeed = Mathf.Lerp(lastSpeed, speed, KeyFrameDelta * Time.deltaTime);
+
+        mAnimation.SetFloat("Speed", newSpeed);
+
+        lastSpeed = newSpeed;
     }
 
     private void OnAttachPerfomed()
