@@ -46,6 +46,12 @@ public class PlayerModel : MonoBehaviour, ConsoleLogs
         set;
     }
 
+    public float FaceingAngle
+    {
+        get;
+        set;
+    }
+
     public bool IsAttacking { get; set; }
 
     public bool IsLocked { get; set; }
@@ -75,6 +81,8 @@ public class PlayerModel : MonoBehaviour, ConsoleLogs
         stringBuilder.AppendLine();
         stringBuilder.Append("Is Locked: ");
         stringBuilder.Append(IsLocked);
+        stringBuilder.Append("Facing Angle: ");
+        stringBuilder.Append(FaceingAngle);
 
         return stringBuilder.ToString();
     }

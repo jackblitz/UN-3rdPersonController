@@ -15,12 +15,14 @@ public class PlayerController : MonoBehaviour
     public float GroundDistance = 0.2f;
     public float JumpHeight = 2f;
     public float KeyFrameDelta = 3f;
+    public float RotationSpeed = 2f;
 
     private Animator mAnimation;
     private float mLastSpeed;
 
     //Transform to ditate walk direction
     public Transform DirectionTransform;
+    private Vector3 mForwardVector;
 
     private void Awake()
     {
@@ -61,9 +63,6 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         CalculateSpeed();
-
-        HandleWalkDirection();
-
         HandleInputData();
 
 
@@ -74,35 +73,56 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        HandleWalkDirection();
+
         RaycastHit hit;
         Vector3 offset = new Vector3(0, -0.2f, 0f);
         if (mPlayerModel.IsGrounded = Physics.Raycast(transform.position - offset, -Vector3.up, out hit, .5f))
             print("Found an object - distance: " + hit.distance);
     }
 
+    /**
+     *  Send Input data updates to player controller.
+     *  Animator controll is informed on changes to players speed
+     */
     private void HandleInputData()
-    {
-        //Vector3 directionShift = lastDirection - new Vector3(horLerp, 0, verLerp);
-        /* mMomentumShift = directionShift.sqrMagnitude;
-
-         if (mMomentumShift != 0)
-         {
-             Debug.Log(mMomentumShift);
-         }*/
-
+    { 
         mAnimation.SetFloat("Speed", mPlayerModel.Speed);
 
     }
 
     private void HandleWalkDirection()
     {
-        Vector3 newDirection = new Vector3(mPlayerModel.MovementDirection.x, 0, mPlayerModel.MovementDirection.y) * 2;
+        Vector3 newDirection = new Vector3(mPlayerModel.MovementDirection.x, 0, mPlayerModel.MovementDirection.y);
 
-        DirectionTransform.transform.localPosition = newDirection;//Vector3.Lerp(DirectionTransform.transform.localPosition, newDirection, Time.deltaTime / mPlayerModel.Speed);
+        if (newDirection.magnitude > 0)
+        {
+            //Find offset based on cameraPositon
+            Vector3 rotationOffset = Camera.main.transform.TransformDirection(newDirection);
+            rotationOffset.y = 0;
 
-        Quaternion lookOnLook = Quaternion.LookRotation(DirectionTransform.position - transform.position);
-        //transform.rotation = Quaternion.Slerp(transform.rotation, lookOnLook, ((KeyFrameDelta / 2) * Time.deltaTime) * mPlayerModel.Speed);
-        //transform.LookAt(DirectionTransform);
+            //Work out angle from MovementDirection to player position
+            float angle = AngleBetweenVector(transform.position, transform.position + rotationOffset);
+
+
+            //Rotate Point around player and work our position
+            Quaternion rotationTo = Quaternion.Euler(0, angle, 0);
+            Quaternion rotation = Quaternion.RotateTowards(DirectionTransform.transform.rotation, rotationTo, Time.deltaTime * (RotationSpeed * mPlayerModel.Speed));
+            mForwardVector = RotatePointAroundPivot(new Vector3(0,0,1), Vector3.zero, rotation.eulerAngles);
+
+            mPlayerModel.FaceingAngle = angle;
+
+            transform.forward = mForwardVector;
+
+            DirectionTransform.transform.rotation = rotation;
+        }
+
+        DirectionTransform.transform.position = transform.position + mForwardVector;
+    }
+
+    private float AngleBetweenVector(Vector3 to, Vector3 from)
+    {
+        return Quaternion.FromToRotation(Vector3.back, to - from).eulerAngles.y;
     }
 
     public Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles)
