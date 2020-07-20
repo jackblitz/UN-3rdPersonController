@@ -46,7 +46,11 @@ public class PlayerModel : MonoBehaviour, ConsoleLogs
         set;
     }
 
-    public float FaceingAngle
+    /**
+     * Shows how much velocity has changed since last update
+     * Large velocity changes indicate a large shift in direction
+     */
+    public float VelocityChange
     {
         get;
         set;
@@ -81,8 +85,12 @@ public class PlayerModel : MonoBehaviour, ConsoleLogs
         stringBuilder.AppendLine();
         stringBuilder.Append("Is Locked: ");
         stringBuilder.Append(IsLocked);
-        stringBuilder.Append("Facing Angle: ");
-        stringBuilder.Append(FaceingAngle);
+        stringBuilder.AppendLine();
+        stringBuilder.Append("Velocity: ");
+        stringBuilder.Append(Speed);
+        stringBuilder.AppendLine();
+        stringBuilder.Append("Velocity Change: ");
+        stringBuilder.Append(VelocityChange);
 
         return stringBuilder.ToString();
     }

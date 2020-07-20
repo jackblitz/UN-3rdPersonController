@@ -17,6 +17,9 @@ public class PlayerController : MonoBehaviour
     public float KeyFrameDelta = 3f;
     public float RotationSpeed = 2f;
 
+    //Max Velocity to which the player can change direction
+    public float MaxVelocityAngle = 120;
+
     private Animator mAnimation;
     private float mLastSpeed;
 
@@ -88,6 +91,7 @@ public class PlayerController : MonoBehaviour
     private void HandleInputData()
     { 
         mAnimation.SetFloat("Speed", mPlayerModel.Speed);
+        mAnimation.SetFloat("AngleVelocity", mPlayerModel.VelocityChange);
 
     }
 
@@ -104,15 +108,22 @@ public class PlayerController : MonoBehaviour
             //Work out angle from MovementDirection to player position
             float angle = AngleBetweenVector(transform.position, transform.position + rotationOffset);
 
-
+           
             //Rotate Point around player and work our position
             Quaternion rotationTo = Quaternion.Euler(0, angle, 0);
-            Quaternion rotation = Quaternion.RotateTowards(DirectionTransform.transform.rotation, rotationTo, Time.deltaTime * (RotationSpeed * mPlayerModel.Speed));
-            mForwardVector = RotatePointAroundPivot(new Vector3(0,0,1), Vector3.zero, rotation.eulerAngles);
+            Quaternion rotation = Quaternion.RotateTowards(DirectionTransform.transform.rotation, rotationTo, Time.deltaTime * RotationSpeed);//Quaternion.RotateTowards(DirectionTransform.transform.rotation, rotationTo, Time.deltaTime * (RotationSpeed + Math.Abs(angle) * mPlayerModel.Speed));
 
-            mPlayerModel.FaceingAngle = angle;
+            //Figure out is rotation is left or right direction
+            float rightleft = (((rotationTo.eulerAngles.y - DirectionTransform.transform.eulerAngles.y) + 360f) % 360f) > 180.0f ? -1 : 1;
 
-            transform.forward = mForwardVector;
+            mPlayerModel.VelocityChange = Quaternion.Angle(DirectionTransform.transform.rotation, rotationTo) * rightleft;
+
+            mForwardVector = RotatePointAroundPivot(new Vector3(0, 0, 1), Vector3.zero, rotation.eulerAngles);
+
+            if (mPlayerModel.VelocityChange < MaxVelocityAngle)
+           {
+                transform.forward = mForwardVector;
+           }
 
             DirectionTransform.transform.rotation = rotation;
         }

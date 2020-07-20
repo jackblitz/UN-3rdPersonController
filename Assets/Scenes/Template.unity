@@ -3651,6 +3651,7 @@ MonoBehaviour:
   JumpHeight: 2
   KeyFrameDelta: 3
   RotationSpeed: 168
+  MaxVelocityAngle: 95
   DirectionTransform: {fileID: 345655449}
 --- !u!1 &4846882342878612558
 GameObject:
