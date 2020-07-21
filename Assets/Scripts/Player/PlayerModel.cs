@@ -56,6 +56,12 @@ public class PlayerModel : MonoBehaviour, ConsoleLogs
         set;
     }
 
+    public float RotationToAngle
+    {
+        get;
+        set;
+    }
+
     public bool IsAttacking { get; set; }
 
     public bool IsLocked { get; set; }
@@ -91,6 +97,9 @@ public class PlayerModel : MonoBehaviour, ConsoleLogs
         stringBuilder.AppendLine();
         stringBuilder.Append("Velocity Change: ");
         stringBuilder.Append(VelocityChange);
+        stringBuilder.AppendLine();
+        stringBuilder.Append("Rotation: ");
+        stringBuilder.Append(RotationToAngle);
 
         return stringBuilder.ToString();
     }

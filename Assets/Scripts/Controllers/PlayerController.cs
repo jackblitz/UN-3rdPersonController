@@ -4,7 +4,7 @@ using static UnityEngine.InputSystem.InputAction;
 using System;
 
 [RequireComponent(typeof(PlayerModel))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, PlayerTurnBehaviour.ITurnBehaviour
 {
     private PlayerModel mPlayerModel;
     private PlayerInputActions.PlayerControlsActions mPlayerInput;
@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
     //Transform to ditate walk direction
     public Transform DirectionTransform;
     private Vector3 mForwardVector;
+    private Vector3 mLastDirection = Vector3.zero;
 
     private void Awake()
     {
@@ -57,6 +58,12 @@ public class PlayerController : MonoBehaviour
     {
         mBody = GetComponent<Rigidbody>();
         mAnimation = GetComponentInChildren<Animator>();
+        PlayerTurnBehaviour[] turnBehaviuours = mAnimation.GetBehaviours<PlayerTurnBehaviour>();
+
+        foreach(PlayerTurnBehaviour turnBehaviour in turnBehaviuours)
+        {
+            turnBehaviour.SetTurnBehaviourListener(this);
+        }
 
         mCollider = GetComponent<CapsuleCollider>();
         GroundDistance = mCollider.bounds.extents.y;
@@ -66,8 +73,8 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         CalculateSpeed();
+        HandleWalkDirection();
         HandleInputData();
-
 
         //Debug.DrawRay(transform.position, -Vector3.up, Color.red);
         //float yawCamera = Camera.main.transform.rotation.eulerAngles.y;
@@ -76,12 +83,11 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        HandleWalkDirection();
 
         RaycastHit hit;
         Vector3 offset = new Vector3(0, -0.2f, 0f);
-        if (mPlayerModel.IsGrounded = Physics.Raycast(transform.position - offset, -Vector3.up, out hit, .5f))
-            print("Found an object - distance: " + hit.distance);
+        if (mPlayerModel.IsGrounded = Physics.Raycast(transform.position - offset, -Vector3.up, out hit, .5f)) { }
+            //print("Found an object - distance: " + hit.distance);
     }
 
     /**
@@ -107,28 +113,35 @@ public class PlayerController : MonoBehaviour
 
             //Work out angle from MovementDirection to player position
             float angle = AngleBetweenVector(transform.position, transform.position + rotationOffset);
-
-           
             //Rotate Point around player and work our position
             Quaternion rotationTo = Quaternion.Euler(0, angle, 0);
-            Quaternion rotation = Quaternion.RotateTowards(DirectionTransform.transform.rotation, rotationTo, Time.deltaTime * RotationSpeed);//Quaternion.RotateTowards(DirectionTransform.transform.rotation, rotationTo, Time.deltaTime * (RotationSpeed + Math.Abs(angle) * mPlayerModel.Speed));
 
-            //Figure out is rotation is left or right direction
-            float rightleft = (((rotationTo.eulerAngles.y - DirectionTransform.transform.eulerAngles.y) + 360f) % 360f) > 180.0f ? -1 : 1;
+            if (Vector3.Distance(newDirection, mLastDirection) != 0)
+            {
+                //User has changed direction
+                float direction = (((rotationTo.eulerAngles.y - transform.eulerAngles.y) + 360f) % 360f) > 180.0f ? -1 : 1;
+                mPlayerModel.VelocityChange = Quaternion.Angle(transform.rotation, rotationTo) * direction;
+            }
 
-            mPlayerModel.VelocityChange = Quaternion.Angle(DirectionTransform.transform.rotation, rotationTo) * rightleft;
+            if (Math.Abs(mPlayerModel.VelocityChange) < MaxVelocityAngle && mPlayerModel.VelocityChange != 0)
+            {
+                Quaternion rotation = Quaternion.RotateTowards(DirectionTransform.transform.rotation, rotationTo, Time.deltaTime * RotationSpeed);//Quaternion.RotateTowards(DirectionTransform.transform.rotation, rotationTo, Time.deltaTime * (RotationSpeed + Math.Abs(angle) * mPlayerModel.Speed));
 
-            mForwardVector = RotatePointAroundPivot(new Vector3(0, 0, 1), Vector3.zero, rotation.eulerAngles);
+                //Figure out is rotation is left or right direction //TODO DO I STIULL NEED THIS
+                float rightleft = (((rotationTo.eulerAngles.y - DirectionTransform.transform.eulerAngles.y) + 360f) % 360f) > 180.0f ? -1 : 1;
+                mPlayerModel.RotationToAngle = Quaternion.Angle(DirectionTransform.transform.rotation, rotationTo) * rightleft;
+          
+                mForwardVector = RotatePointAroundPivot(new Vector3(0, 0, 1), Vector3.zero, rotation.eulerAngles);
 
-            if (mPlayerModel.VelocityChange < MaxVelocityAngle)
-           {
-                transform.forward = mForwardVector;
-           }
+                DirectionTransform.transform.rotation = rotation;
 
-            DirectionTransform.transform.rotation = rotation;
+                transform.forward = RotatePointAroundPivot(new Vector3(0, 0, 0.1f), Vector3.zero, DirectionTransform.transform.eulerAngles);
+            }
         }
 
         DirectionTransform.transform.position = transform.position + mForwardVector;
+
+        mLastDirection = newDirection;
     }
 
     private float AngleBetweenVector(Vector3 to, Vector3 from)
@@ -141,10 +154,28 @@ public class PlayerController : MonoBehaviour
         return Quaternion.Euler(angles) * (point - pivot) + pivot;
     }
 
+    public void OnTurnAnimiationStarted()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnTurnAnimationFinished()
+    {
+        float angle = mPlayerModel.VelocityChange;
+        mPlayerModel.VelocityChange = 0;
+
+        Quaternion rotationTo = Quaternion.Euler(0, angle + transform.rotation.eulerAngles.y, 0);
+        DirectionTransform.transform.rotation = rotationTo;
+
+        mForwardVector = RotatePointAroundPivot(new Vector3(0, 0, 1), Vector3.zero, rotationTo.eulerAngles);
+        transform.forward = RotatePointAroundPivot(new Vector3(0, 0, 0.1f), Vector3.zero, DirectionTransform.transform.eulerAngles);
+    }
+
     private void OnAttachPerfomed()
     {
 
     }
+
 
     private void CalculateSpeed()
     {
