@@ -116,7 +116,10 @@ public class PlayerController : MonoBehaviour, PlayerTurnBehaviour.ITurnBehaviou
             float angle = AngleBetweenVector(transform.position, transform.position + rotationOffset);
             //Rotate Point around player and work our position
             Quaternion rotationTo = Quaternion.Euler(0, angle, 0);
-            Quaternion rotation = Quaternion.RotateTowards(DirectionTransform.transform.rotation, rotationTo, Time.deltaTime * RotationSpeed);//Quaternion.RotateTowards(DirectionTransform.transform.rotation, rotationTo, Time.deltaTime * (RotationSpeed + Math.Abs(angle) * mPlayerModel.Speed));
+
+            float rotationSpeed = isTurnAnimating ? RotationSpeed * 2: RotationSpeed;
+
+            Quaternion rotation = Quaternion.RotateTowards(DirectionTransform.transform.rotation, rotationTo, Time.deltaTime * rotationSpeed);//Quaternion.RotateTowards(DirectionTransform.transform.rotation, rotationTo, Time.deltaTime * (RotationSpeed + Math.Abs(angle) * mPlayerModel.Speed));
 
             //Figure out is rotation is left or right direction //TODO DO I STIULL NEED THIS
             //float rightleft = (((rotationTo.eulerAngles.y - DirectionTransform.transform.eulerAngles.y) + 360f) % 360f) > 180.0f ? -1 : 1;
@@ -166,15 +169,8 @@ public class PlayerController : MonoBehaviour, PlayerTurnBehaviour.ITurnBehaviou
 
     public void OnTurnAnimationFinished()
     {
-        float angle = mPlayerModel.VelocityChange;
         mPlayerModel.VelocityChange = 0;
         isTurnAnimating = false;
-
-      /* Quaternion rotationTo = Quaternion.Euler(0, angle + transform.rotation.eulerAngles.y, 0);
-        DirectionTransform.transform.rotation = rotationTo;
-
-        mForwardVector = RotatePointAroundPivot(new Vector3(0, 0, 1), Vector3.zero, rotationTo.eulerAngles);
-        transform.forward = RotatePointAroundPivot(new Vector3(0, 0, 0.1f), Vector3.zero, DirectionTransform.transform.eulerAngles);*/
     }
 
     private void OnAttachPerfomed()
