@@ -10,7 +10,6 @@ public class PlayerController : MonoBehaviour, PlayerTurnBehaviour.ITurnBehaviou
     private PlayerInputActions.PlayerControlsActions mPlayerInput;
 
     private Rigidbody mBody;
-    private CapsuleCollider mCollider;
 
     public float GroundDistance = 0.2f;
     public float JumpHeight = 2f;
@@ -65,16 +64,12 @@ public class PlayerController : MonoBehaviour, PlayerTurnBehaviour.ITurnBehaviou
         {
             turnBehaviour.SetTurnBehaviourListener(this);
         }
-
-        mCollider = GetComponent<CapsuleCollider>();
-        GroundDistance = mCollider.bounds.extents.y;
-
     }
 
     private void Update()
     {
         CalculateSpeed();
-        HandleWalkDirection();
+       
         HandleInputData();
 
         //Debug.DrawRay(transform.position, -Vector3.up, Color.red);
@@ -84,6 +79,7 @@ public class PlayerController : MonoBehaviour, PlayerTurnBehaviour.ITurnBehaviou
 
     void FixedUpdate()
     {
+        HandleWalkDirection();
 
         RaycastHit hit;
         Vector3 offset = new Vector3(0, -0.2f, 0f);
@@ -119,11 +115,7 @@ public class PlayerController : MonoBehaviour, PlayerTurnBehaviour.ITurnBehaviou
 
             float rotationSpeed = isTurnAnimating ? RotationSpeed * 2: RotationSpeed;
 
-            Quaternion rotation = Quaternion.RotateTowards(DirectionTransform.transform.rotation, rotationTo, Time.deltaTime * rotationSpeed);//Quaternion.RotateTowards(DirectionTransform.transform.rotation, rotationTo, Time.deltaTime * (RotationSpeed + Math.Abs(angle) * mPlayerModel.Speed));
-
-            //Figure out is rotation is left or right direction //TODO DO I STIULL NEED THIS
-            //float rightleft = (((rotationTo.eulerAngles.y - DirectionTransform.transform.eulerAngles.y) + 360f) % 360f) > 180.0f ? -1 : 1;
-
+            Quaternion rotation = Quaternion.RotateTowards(DirectionTransform.transform.rotation, rotationTo, Time.deltaTime * rotationSpeed);
             mForwardVector = RotatePointAroundPivot(new Vector3(0, 0, 1), Vector3.zero, rotation.eulerAngles);
 
             DirectionTransform.transform.rotation = rotation;
@@ -132,10 +124,11 @@ public class PlayerController : MonoBehaviour, PlayerTurnBehaviour.ITurnBehaviou
 
             if (Vector3.Distance(newDirection, mLastDirection) != 0)
             {
-                //User has changed direction
+                //User has changed direction. Works out the angle of rotation from current rotation point to the 
                 mPlayerModel.VelocityChange = Quaternion.Angle(transform.rotation, rotationTo) * direction;
             }
 
+            // Amount left to rotation toward angle
             mPlayerModel.RotationToAngle = Quaternion.Angle(DirectionTransform.transform.rotation, rotationTo) * direction;
 
 
@@ -144,7 +137,7 @@ public class PlayerController : MonoBehaviour, PlayerTurnBehaviour.ITurnBehaviou
                 
             }
 
-            transform.forward = RotatePointAroundPivot(new Vector3(0, 0, 0.1f), Vector3.zero, DirectionTransform.transform.eulerAngles);
+            transform.forward = mForwardVector;
         }
 
         DirectionTransform.transform.position = transform.position + mForwardVector;
