@@ -94,8 +94,7 @@ public class PlayerController : MonoBehaviour, PlayerTurnBehaviour.ITurnBehaviou
     private void HandleInputData()
     { 
         mAnimation.SetFloat("Speed", mPlayerModel.Speed);
-        mAnimation.SetFloat("AngleVelocity", mPlayerModel.VelocityChange);
-
+        mAnimation.SetFloat("AngleVelocity", mPlayerModel.RotationToAngle);
     }
 
     private void HandleWalkDirection()
@@ -126,6 +125,12 @@ public class PlayerController : MonoBehaviour, PlayerTurnBehaviour.ITurnBehaviou
             {
                 //User has changed direction. Works out the angle of rotation from current rotation point to the 
                 mPlayerModel.VelocityChange = Quaternion.Angle(transform.rotation, rotationTo) * direction;
+                //If we are currently turned and we need to starting turnning animation again cancel out. This will stop large rotations being performed. 
+                if (mPlayerModel.VelocityChange > MaxVelocityAngle)
+                {
+                    Debug.Log("Stop Turn Triggered");
+                    mAnimation.SetTrigger("StopTurn");
+                }
             }
 
             // Amount left to rotation toward angle
@@ -162,7 +167,6 @@ public class PlayerController : MonoBehaviour, PlayerTurnBehaviour.ITurnBehaviou
 
     public void OnTurnAnimationFinished()
     {
-        mPlayerModel.VelocityChange = 0;
         isTurnAnimating = false;
     }
 
