@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class ConsoleRenderer : MonoBehaviour
 {
-    public PlayerModel mActiveLog;
+    public PlayerMotorModel mActiveLog;
 
     private Text mTextRenderer;
 

@@ -7,7 +7,7 @@ public class ThirdPersonFreeLookCameraController : MonoBehaviour
 {
     public Transform playerController;
 
-    private PlayerModel mPlayerModel;
+    private PlayerMotorModel mPlayerModel;
     private CinemachineFreeLook mFreeLook;
 
     [Range(0f, 10f)] public float LookSpeed = 1f;
@@ -16,13 +16,13 @@ public class ThirdPersonFreeLookCameraController : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
-       mPlayerModel = playerController.GetComponent<PlayerModel>();
+       mPlayerModel = playerController.GetComponent<PlayerMotorModel>();
        mFreeLook = GetComponent<CinemachineFreeLook>();
     }
 
     private void Update()
     {
-        Vector2 lookMovement = mPlayerModel.LookAtDirection.normalized;
+        Vector2 lookMovement = mPlayerModel.LookAtInput.normalized;
         lookMovement.y = InvertY ? -lookMovement.y : lookMovement.y;
 
         // This is because X axis is only contains between -180 and 180 instead of 0 and 1 like the Y axis
