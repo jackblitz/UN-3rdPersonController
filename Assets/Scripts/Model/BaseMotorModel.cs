@@ -33,7 +33,7 @@ public class BaseMotorModel : MonoBehaviour, ConsoleLogs
             set;
         }
 
-        public PivotRotationModifier.Side DirectionSide
+        public PivotRotationModifier.Direction DirectionSide
         {
             get;
             set;

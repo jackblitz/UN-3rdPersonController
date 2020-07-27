@@ -12,15 +12,11 @@ public class PlayerMotorController : CharacterMotorController
     private void HandleLookAtMotor()
     {
         Vector3 cameraDirection = RotationUtils.RotatePointAroundPivot(Vector3.forward, Vector3.zero, Camera.main.transform.rotation.eulerAngles);
-        HeadRotation.TranslateTo(cameraDirection);
+        //HeadRotation.TranslateTo(cameraDirection);
        
-        Vector3 cameraForward = Camera.main.transform.TransformPoint(Vector3.forward * 20);
-        GameObject gameObject = GameObject.Find("Camera_LookAt");
+        Vector3 cameraForward = Camera.main.transform.TransformPoint(Vector3.forward * 8);
 
-        Debug.Log(cameraForward + " Camera Look At: " + gameObject.transform.position);
-        //HeadRotation.transform.position = inverse;
-        // HeadRotation.TranslateTo(cameraForward);
-        HeadRotation.transform.localPosition = cameraForward;
+        HeadRotation.transform.localPosition = new Vector3(HeadRotation.transform.position.x, cameraForward.y, HeadRotation.transform.position.z);
     }
 }
 
