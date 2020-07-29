@@ -61,8 +61,6 @@ public class PivotRotationModifier : MonoBehaviour
         set;
     }
 
-    private Quaternion StartRotation;
-
     /**
      * Transform to rotate around. Known at the pivot transform
      */
@@ -77,6 +75,7 @@ public class PivotRotationModifier : MonoBehaviour
      *  How fast should the transform rotation towards the direction
      */
     public float RotationSpeed;
+    private Quaternion StartPosition;
 
 
     /**
@@ -84,18 +83,9 @@ public class PivotRotationModifier : MonoBehaviour
      */
     public void TranslateTo(Vector3 translation)
     {
-        if (translation.magnitude > 0)
-        {
-            RotationTowards = translation;
-            StartRotation = transform.rotation;
-            float rotationTo = CalculateAngle();
-
-            if (rotationTo != RotationTo)
-            {
-                RotationTo = rotationTo;
-                CalulateRotationDirection();
-            }
-        }
+        RotationTowards = translation;
+        RotationTo = CalculateAngle();
+        CalulateRotationDirection(true);
     }
 
     /**
@@ -109,14 +99,17 @@ public class PivotRotationModifier : MonoBehaviour
         return RotationUtils.AngleBetweenVector(Pivot.position, Pivot.position + rotationOffset);
     }
 
-    private void CalulateRotationDirection()
+    private void CalulateRotationDirection(bool updateDirection)
     {
-        float whichWay = Vector3.SignedAngle(RotationTowards, transform.forward, Vector3.down);
+        //TODO Camera transform keeps moving back of the animation
+        float whichWay = Vector3.SignedAngle(OffsetPivot.TransformDirection(RotationTowards).normalized, transform.forward, Vector3.down);
         float currentDirection = Vector3.SignedAngle(transform.forward, Vector3.forward, Vector3.down);
         Direction side;
 
+
         RotationAmount = Math.Abs(whichWay);
 
+        //Always make sure we go in the forward direction. 
         if (Math.Abs(whichWay) > 140)
         {
             if (currentDirection > 0.1f)
@@ -131,18 +124,21 @@ public class PivotRotationModifier : MonoBehaviour
             RotationAmount = 360 - Math.Abs(whichWay); 
         }
 
-        if (whichWay > 0.1f)
+        if (updateDirection)
         {
-            side = Direction.CLOCKWISE;
-        }
-        else
-        {
-            side = Direction.ANTI_CLOCKWISE;
+            if (whichWay > 0.1f)
+            {
+                side = Direction.CLOCKWISE;
+            }
+            else
+            {
+                side = Direction.ANTI_CLOCKWISE;
+            }
+
+            SideRotation = side;
         }
 
-        Debug.Log(whichWay);
-
-        SideRotation = side;
+        StartPosition = transform.rotation;
     }
 
    /* private float CalculateRotationAmount()
@@ -175,13 +171,12 @@ public class PivotRotationModifier : MonoBehaviour
         //Rotate Point around player and work our position
         Quaternion rotationTo = Quaternion.Euler(0, RotationTo, 0);
         float rotationSpeedByDistance = ((RotationAmount / 360) * 100) / 100;
-        float rotationPercent = (((RotationAmount - RotationRemaining) / RotationAmount) * 100) / 100;
 
         Quaternion rotationAmount = Quaternion.Euler(0, RotationAmount, 0);
-        Quaternion finalRotation = SideRotation == Direction.ANTI_CLOCKWISE ? StartRotation * Quaternion.Inverse(rotationAmount) : StartRotation * rotationAmount;
+        Quaternion finalRotation = SideRotation == Direction.ANTI_CLOCKWISE ? StartPosition * Quaternion.Inverse(rotationAmount) : StartPosition * rotationAmount;
         //SideRotation == Side.LEFT ? StartRotation * Quaternion.Inverse(rotationAmount) :
         Quaternion rotation = Quaternion.RotateTowards(transform.rotation, finalRotation, (RotationSpeed * rotationSpeedByDistance));
-        transform.rotation = rotation;
+        transform.rotation = finalRotation;
 
         // Amount left to rotation toward angle
         return Quaternion.Angle(transform.rotation, rotationTo);
@@ -195,6 +190,8 @@ public class PivotRotationModifier : MonoBehaviour
         {
             if (RotationTowards.magnitude > 0)
             {
+                RotationTo = CalculateAngle();
+                CalulateRotationDirection(true);
                 RotationRemaining = CalculateRotation();
                 Forward = RotationUtils.RotatePointAroundPivot(Vector3.forward, Vector3.zero, transform.rotation.eulerAngles);
             }
