@@ -22,7 +22,8 @@ public class TransformSnap : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = GetSharedSnapPosition(_transform.position + _offset, snap);
+        transform.position = GetSharedSnapPosition(_transform.position + _offset, 0.1f);
+        transform.rotation = Quaternion.Euler(GetSharedSnapPosition( _transform.rotation.eulerAngles, snap));
     }
 
     /// <summary>
@@ -32,10 +33,8 @@ public class TransformSnap : MonoBehaviour
     {
         return new Vector3(
                 Mathf.Round(originalPosition.x / snap) * snap,
-                originalPosition.y,
-                originalPosition.z
-            // Mathf.Round(originalPosition.y / snap) * snap,
-            //Mathf.Round(originalPosition.z / snap) * snap
+                Mathf.Round(originalPosition.y / snap) * snap,
+                Mathf.Round(originalPosition.z / snap) * snap
             );
     }
 

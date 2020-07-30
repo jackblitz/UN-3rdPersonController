@@ -76,6 +76,7 @@ public class PivotRotationModifier : MonoBehaviour
      */
     public float RotationSpeed;
     private Quaternion StartPosition;
+    private float mLastWay;
 
 
     /**
@@ -102,43 +103,49 @@ public class PivotRotationModifier : MonoBehaviour
     private void CalulateRotationDirection(bool updateDirection)
     {
         //TODO Camera transform keeps moving back of the animation
-        float whichWay = Vector3.SignedAngle(OffsetPivot.TransformDirection(RotationTowards).normalized, transform.forward, Vector3.down);
+        float whichWay = Vector3.SignedAngle(OffsetPivot.TransformDirection(RotationTowards), transform.forward, Vector3.down);
         float currentDirection = Vector3.SignedAngle(transform.forward, Vector3.forward, Vector3.down);
-        Direction side;
 
+        //Are we going a new way
+        if (whichWay != mLastWay)
+        { 
+            Direction side;
 
-        RotationAmount = Math.Abs(whichWay);
+            RotationAmount = Math.Abs(whichWay);
 
-        //Always make sure we go in the forward direction. 
-        if (Math.Abs(whichWay) > 140)
-        {
-            if (currentDirection > 0.1f)
+            //Always make sure we go in the forward direction. 
+            if (Math.Abs(whichWay) > 140)
             {
-                whichWay = 180;
-            }
-            else
-            {
-                whichWay = -180;
+                if (currentDirection > 0.1f)
+                {
+                    whichWay = 180;
+                }
+                else
+                {
+                    whichWay = -180;
+                }
+
+                RotationAmount = 360 - Math.Abs(whichWay);
             }
 
-            RotationAmount = 360 - Math.Abs(whichWay); 
+            if (updateDirection)
+            {
+                if (whichWay > 0.1f)
+                {
+                    side = Direction.CLOCKWISE;
+                }
+                else
+                {
+                    side = Direction.ANTI_CLOCKWISE;
+                }
+
+                SideRotation = side;
+            }
+
+            StartPosition = transform.rotation;
         }
 
-        if (updateDirection)
-        {
-            if (whichWay > 0.1f)
-            {
-                side = Direction.CLOCKWISE;
-            }
-            else
-            {
-                side = Direction.ANTI_CLOCKWISE;
-            }
-
-            SideRotation = side;
-        }
-
-        StartPosition = transform.rotation;
+        mLastWay = whichWay;
     }
 
    /* private float CalculateRotationAmount()
@@ -176,7 +183,7 @@ public class PivotRotationModifier : MonoBehaviour
         Quaternion finalRotation = SideRotation == Direction.ANTI_CLOCKWISE ? StartPosition * Quaternion.Inverse(rotationAmount) : StartPosition * rotationAmount;
         //SideRotation == Side.LEFT ? StartRotation * Quaternion.Inverse(rotationAmount) :
         Quaternion rotation = Quaternion.RotateTowards(transform.rotation, finalRotation, (RotationSpeed * rotationSpeedByDistance));
-        transform.rotation = finalRotation;
+        transform.rotation = rotation;
 
         // Amount left to rotation toward angle
         return Quaternion.Angle(transform.rotation, rotationTo);
