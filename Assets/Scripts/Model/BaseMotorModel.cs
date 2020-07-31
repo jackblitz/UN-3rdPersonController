@@ -33,7 +33,7 @@ public class BaseMotorModel : MonoBehaviour, ConsoleLogs
             set;
         }
 
-        public PivotRotationModifier.Direction DirectionSide
+        public DirectionRotationModifier.RotationDirection DirectionSide
         {
             get;
             set;
@@ -129,10 +129,10 @@ public class BaseMotorModel : MonoBehaviour, ConsoleLogs
         stringBuilder.Append("Hip Desintation Angle: ");
         stringBuilder.Append(HipRotationMotor.AngleDesintation);
         stringBuilder.AppendLine();
-        stringBuilder.Append("Hip Roation Amount: ");
+        stringBuilder.Append("Hip Roation Velocity: ");
         stringBuilder.Append(HipRotationMotor.AngleVelocityChange);
         stringBuilder.AppendLine();
-        stringBuilder.Append("Hip Rotation Amount Left: ");
+        stringBuilder.Append("Hip Rotation Remaining: ");
         stringBuilder.Append(HipRotationMotor.AngleChangeRemaining);
         stringBuilder.AppendLine();
         stringBuilder.Append("Hip Rotation Side: ");

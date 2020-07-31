@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class CharacterMotorController : MonoBehaviour
@@ -14,6 +15,9 @@ public class CharacterMotorController : MonoBehaviour
 
     public PivotRotationModifier HipRotation;
     public PivotRotationModifier HeadRotation;
+
+    public DirectionRotationModifier HeadAimAt;
+
 
     private void Start()
     {
@@ -35,7 +39,8 @@ public class CharacterMotorController : MonoBehaviour
     }
     public virtual void FixedUpdate()
     {
-        UpdatePlayerHipRotation();
+        //UpdatePlayerHipRotation();
+        UpdateHipRotation();
     }
     private void HandleInput()
     {
@@ -47,11 +52,22 @@ public class CharacterMotorController : MonoBehaviour
         }
 
         mLastDirection = direction;
+
+        HeadAimAt.setDirection(direction);
+    }
+
+    private void UpdateHipRotation()
+    {
+        mMotorModel.HipRotationMotor.DirectionSide = HeadAimAt.DirectionOfRotation;
+        mMotorModel.HipRotationMotor.AngleDesintation = HeadAimAt.RotationDestination;
+        mMotorModel.HipRotationMotor.AngleVelocityChange = HeadAimAt.RotationVelocity;
+        mMotorModel.HipRotationMotor.AngleChangeRemaining = HeadAimAt.RotationRemaining;
+        transform.forward = HeadAimAt.ForwardPosition;
     }
 
     private void UpdatePlayerHipRotation()
     {
-        mMotorModel.HipRotationMotor.DirectionSide = HipRotation.SideRotation;
+      // mMotorModel.HipRotationMotor.DirectionSide = HipRotation.SideRotation;
         mMotorModel.HipRotationMotor.AngleDesintation = HipRotation.RotationTo;
         mMotorModel.HipRotationMotor.AngleVelocityChange = HipRotation.RotationAmount;
         mMotorModel.HipRotationMotor.AngleChangeRemaining = HipRotation.RotationRemaining;
