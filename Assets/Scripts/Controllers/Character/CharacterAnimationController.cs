@@ -59,7 +59,7 @@ public class CharacterAnimationController : MonoBehaviour, PlayerTurnBehaviour.I
  */
     private void HandleInputData()
     {
-        //mAnimation.SetFloat("Speed", mMotorModel.Velocity);
+        mAnimation.SetFloat("Speed", mMotorModel.Velocity);
     }
 
     public void HandleRotationData()
@@ -69,6 +69,7 @@ public class CharacterAnimationController : MonoBehaviour, PlayerTurnBehaviour.I
         {
             OnStopTurn();
         }
+
         mAnimation.SetFloat("AngleVelocity", mMotorModel.HipRotationMotor.AngleVelocityChange);
     }
 

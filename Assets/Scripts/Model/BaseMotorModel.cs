@@ -18,7 +18,7 @@ public class BaseMotorModel : MonoBehaviour, ConsoleLogs
         /**
          * Show much much the motor still need to rotate by
          */
-        public float AngleChangeRemaining
+        public float AngleChangeAmount
         {
             get;
             set;
@@ -133,7 +133,7 @@ public class BaseMotorModel : MonoBehaviour, ConsoleLogs
         stringBuilder.Append(HipRotationMotor.AngleVelocityChange);
         stringBuilder.AppendLine();
         stringBuilder.Append("Hip Rotation Remaining: ");
-        stringBuilder.Append(HipRotationMotor.AngleChangeRemaining);
+        stringBuilder.Append(HipRotationMotor.AngleChangeAmount);
         stringBuilder.AppendLine();
         stringBuilder.Append("Hip Rotation Side: ");
         stringBuilder.Append(HipRotationMotor.DirectionSide.ToString());

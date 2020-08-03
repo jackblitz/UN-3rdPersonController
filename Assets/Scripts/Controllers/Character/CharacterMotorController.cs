@@ -61,7 +61,7 @@ public class CharacterMotorController : MonoBehaviour
         mMotorModel.HipRotationMotor.DirectionSide = HeadAimAt.DirectionOfRotation;
         mMotorModel.HipRotationMotor.AngleDesintation = HeadAimAt.RotationDestination;
         mMotorModel.HipRotationMotor.AngleVelocityChange = HeadAimAt.RotationVelocity;
-        mMotorModel.HipRotationMotor.AngleChangeRemaining = HeadAimAt.RotationRemaining;
+        mMotorModel.HipRotationMotor.AngleChangeAmount = HeadAimAt.RotationAmount;
         transform.forward = HeadAimAt.ForwardPosition;
     }
 
@@ -70,7 +70,7 @@ public class CharacterMotorController : MonoBehaviour
       // mMotorModel.HipRotationMotor.DirectionSide = HipRotation.SideRotation;
         mMotorModel.HipRotationMotor.AngleDesintation = HipRotation.RotationTo;
         mMotorModel.HipRotationMotor.AngleVelocityChange = HipRotation.RotationAmount;
-        mMotorModel.HipRotationMotor.AngleChangeRemaining = HipRotation.RotationRemaining;
+        mMotorModel.HipRotationMotor.AngleChangeAmount = HipRotation.RotationRemaining;
         transform.forward = HipRotation.Forward;
     }
 
