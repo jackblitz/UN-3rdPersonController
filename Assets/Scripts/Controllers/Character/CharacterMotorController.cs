@@ -13,10 +13,9 @@ public class CharacterMotorController : MonoBehaviour
     private Vector3 mLastDirection;
     private RaycastHit hit;
 
-    public PivotRotationModifier HipRotation;
-    public PivotRotationModifier HeadRotation;
+    public DirectionRotationConstraintModifier HeadRotation;
 
-    public DirectionRotationModifier HeadAimAt;
+    public DirectionRotationModifier HipRotation;
 
 
     private void Start()
@@ -46,34 +45,19 @@ public class CharacterMotorController : MonoBehaviour
     {
         Vector3 direction = new Vector3(mMotorModel.MovementInput.x, 0, mMotorModel.MovementInput.y);
 
-        if (Vector3.Distance(direction, mLastDirection) != 0)
-        {
-            HipRotation.TranslateTo(direction);
-        }
-
         mLastDirection = direction;
 
-        HeadAimAt.setDirection(direction);
+        HipRotation.setDirection(direction);
     }
 
     private void UpdateHipRotation()
     {
-        mMotorModel.HipRotationMotor.DirectionSide = HeadAimAt.DirectionOfRotation;
-        mMotorModel.HipRotationMotor.AngleDesintation = HeadAimAt.RotationDestination;
-        mMotorModel.HipRotationMotor.AngleVelocityChange = HeadAimAt.RotationVelocity;
-        mMotorModel.HipRotationMotor.AngleChangeAmount = HeadAimAt.RotationAmount;
-        transform.forward = HeadAimAt.ForwardPosition;
+        mMotorModel.HipRotationMotor.DirectionSide = HeadRotation.DirectionOfRotation;
+        mMotorModel.HipRotationMotor.AngleDesintation = HeadRotation.RotationDestination;
+        mMotorModel.HipRotationMotor.AngleVelocityChange = HeadRotation.RotationVelocity;
+        mMotorModel.HipRotationMotor.AngleChangeAmount = HeadRotation.RotationAmount;
+        transform.forward = HipRotation.ForwardPosition;
     }
-
-    private void UpdatePlayerHipRotation()
-    {
-      // mMotorModel.HipRotationMotor.DirectionSide = HipRotation.SideRotation;
-        mMotorModel.HipRotationMotor.AngleDesintation = HipRotation.RotationTo;
-        mMotorModel.HipRotationMotor.AngleVelocityChange = HipRotation.RotationAmount;
-        mMotorModel.HipRotationMotor.AngleChangeAmount = HipRotation.RotationRemaining;
-        transform.forward = HipRotation.Forward;
-    }
-
 
     private void CalculateSpeed()
     {

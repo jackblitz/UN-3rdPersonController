@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class PlayerMotorController : CharacterMotorController
 {
+    public GameObject mCameraReference;
+
     public override void Update()
     {
         base.Update();
@@ -11,12 +13,13 @@ public class PlayerMotorController : CharacterMotorController
 
     private void HandleLookAtMotor()
     {
-        Vector3 cameraDirection = RotationUtils.RotatePointAroundPivot(Vector3.forward, Vector3.zero, Camera.main.transform.rotation.eulerAngles);
-        //HeadRotation.TranslateTo(cameraDirection);
+        Vector3 cameraDirection = RotationUtils.RotatePointAroundPivot(Vector3.forward, Vector3.zero, mCameraReference.transform.rotation.eulerAngles);
+
+        HeadRotation.setDirection(cameraDirection);
        
         Vector3 cameraForward = Camera.main.transform.TransformPoint(Vector3.forward * 8);
 
-        HeadRotation.transform.localPosition = new Vector3(HeadRotation.transform.position.x, cameraForward.y, HeadRotation.transform.position.z);
+       // HeadRotation.transform.localPosition = new Vector3(HeadRotation.transform.position.x, cameraForward.y, HeadRotation.transform.position.z);
     }
 }
 
