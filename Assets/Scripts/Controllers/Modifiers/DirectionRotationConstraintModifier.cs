@@ -56,7 +56,7 @@ public class DirectionRotationConstraintModifier : MonoBehaviour
         mDirection = direction;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         // if (Vector3.Distance(mDirection, mLastDirection) != 0)
         // {
@@ -76,13 +76,13 @@ public class DirectionRotationConstraintModifier : MonoBehaviour
 
     private RotationDirection CalcuateDirection()
     {
-        float directionY = Mathf.RoundToInt(Vector3.SignedAngle(mDirection, Vector3.forward, Vector3.down));
+        float directionY = Vector3.SignedAngle(mDirection, Vector3.forward, Vector3.down);
 
         float currentY = transform.rotation.eulerAngles.y;
 
         float destinationY = CalculateRotationDestination();
 
-        float shortestAngle = Mathf.RoundToInt(Mathf.DeltaAngle(currentY, destinationY));
+        float shortestAngle = Mathf.DeltaAngle(currentY, destinationY);
 
         RotationAmount = shortestAngle;
 
@@ -151,12 +151,12 @@ public class DirectionRotationConstraintModifier : MonoBehaviour
 
     private float CalculateRotationDestination()
     {
-        return Mathf.RoundToInt(Vector3.SignedAngle(mDirection, Vector3.forward, Vector3.down));
+        return Vector3.SignedAngle(mDirection, Vector3.forward, Vector3.down);
     }
 
     //TODO WORK OUT REMAINING BASED ON DIRECTION
     private float CalculateRemainingRotation()
     {
-        return Mathf.RoundToInt(Vector3.SignedAngle(mDirection, transform.forward, Vector3.down));
+        return Vector3.SignedAngle(mDirection, transform.forward, Vector3.down);
     }
 }

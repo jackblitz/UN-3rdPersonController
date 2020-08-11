@@ -67,7 +67,7 @@ public class CharacterAnimationController : MonoBehaviour, PlayerTurnBehaviour.I
         //If we are currently turned and we need to starting turnning animation again cancel out. This will stop large rotations being performed. 
         if (mMotorModel.HipRotationMotor.AngleVelocityChange > MaxVelocityAngle)
         {
-            OnStopTurn();
+            //OnStopTurn();
         }
 
         mAnimation.SetFloat("AngleVelocity", mMotorModel.HipRotationMotor.AngleVelocityChange);

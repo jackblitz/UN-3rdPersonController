@@ -52,10 +52,10 @@ public class CharacterMotorController : MonoBehaviour
 
     private void UpdateHipRotation()
     {
-        mMotorModel.HipRotationMotor.DirectionSide = HeadRotation.DirectionOfRotation;
-        mMotorModel.HipRotationMotor.AngleDesintation = HeadRotation.RotationDestination;
-        mMotorModel.HipRotationMotor.AngleVelocityChange = HeadRotation.RotationVelocity;
-        mMotorModel.HipRotationMotor.AngleChangeAmount = HeadRotation.RotationAmount;
+        mMotorModel.HipRotationMotor.DirectionSide = HipRotation.DirectionOfRotation;
+        mMotorModel.HipRotationMotor.AngleDesintation = HipRotation.RotationDestination;
+        mMotorModel.HipRotationMotor.AngleVelocityChange = HipRotation.RotationVelocity;
+        mMotorModel.HipRotationMotor.AngleChangeAmount = HipRotation.RotationAmount;
         transform.forward = HipRotation.ForwardPosition;
     }
 
